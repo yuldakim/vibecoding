@@ -1,0 +1,2214 @@
+{
+  "$schema_version": "1.0",
+  "meta": {
+    "project": "이불공장 납품·정산 관리 사이트",
+    "updated": "2026-09-16",
+    "context_doc": "설계.md",
+    "doc_dir": "docs/tasks",
+    "stack": "Next.js(App Router) + Supabase(Postgres/Auth/Storage) + Vercel",
+    "task_unit_min": 30,
+    "note": "작업 상태 SSOT. 각 task.doc은 docs/tasks/<id>.md로 id에서 바로 유도된다. 상태 전이: todo → in_progress → review → done. 진행 불가 시 blocked(선행 작업·외부 대기) 또는 needs_decision(사람의 판단 필요). 폐기는 cancelled. done/cancelled에는 done_at을 채운다."
+  },
+  "enums": {
+    "status": [
+      "todo",
+      "in_progress",
+      "review",
+      "needs_decision",
+      "blocked",
+      "done",
+      "cancelled"
+    ],
+    "priority": [
+      "P0",
+      "P1",
+      "P2",
+      "P3",
+      null
+    ],
+    "category": [
+      "infra",
+      "data",
+      "auth",
+      "feature",
+      "ui",
+      "report",
+      "email",
+      "test",
+      "docs"
+    ]
+  },
+  "labels": {
+    "status": {
+      "todo": "할 일",
+      "in_progress": "작업중",
+      "review": "리뷰필요",
+      "needs_decision": "사람 판단 필요",
+      "blocked": "대기",
+      "done": "완료",
+      "cancelled": "취소"
+    },
+    "category": {
+      "infra": "인프라·배포",
+      "data": "데이터 모델",
+      "auth": "인증·권한",
+      "feature": "기능 구현",
+      "ui": "화면·UX",
+      "report": "엑셀·출력",
+      "email": "이메일·알림",
+      "test": "테스트",
+      "docs": "문서·운영"
+    }
+  },
+  "phases": [
+    "0. 기반 구축",
+    "1. 마스터 데이터",
+    "2. 송장",
+    "3. 봉제 단가",
+    "4. 월말 정산",
+    "5. 엑셀·이메일",
+    "6. 알림·화면·마무리"
+  ],
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "프로젝트 기본 정보·운영 계정 확정",
+      "summary": "공장 정보 실제 값, 사이트 전용 이메일 주소, 배포 도메인, 사장님 초기 비밀번호 정책을 사람이 정해야 개발이 막히지 않는다.",
+      "doc": "docs/tasks/T-001.md",
+      "status": "needs_decision",
+      "priority": "P0",
+      "category": "docs",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [],
+      "where": null,
+      "refs": [
+        "§19 이메일 발송",
+        "§23 공장 정보"
+      ],
+      "note": "사장님 확인 필요. T-002·T-019·T-073이 이 값에 의존한다.",
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-002",
+      "title": "Next.js 프로젝트 초기화",
+      "summary": "Next.js App Router + TypeScript + Tailwind로 저장소를 초기화하고 기본 레이아웃과 lint/format을 세운다.",
+      "doc": "docs/tasks/T-002.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "infra",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [],
+      "where": "app/, package.json, tsconfig.json",
+      "refs": [
+        "§1 프로젝트 목적"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-003",
+      "title": "Supabase 프로젝트 연결",
+      "summary": "Supabase 프로젝트를 만들고 로컬 CLI·환경변수·클라이언트 헬퍼를 연결한다.",
+      "doc": "docs/tasks/T-003.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "infra",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-002"
+      ],
+      "where": "supabase/, .env.local",
+      "refs": [
+        "§24 데이터 보존 원칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-004",
+      "title": "전체 DB 스키마 설계 확정",
+      "summary": "테이블·관계·상태값을 한 번에 그려 확정한다. 이후 마이그레이션 태스크들이 이 설계를 그대로 따른다.",
+      "doc": "docs/tasks/T-004.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-003"
+      ],
+      "where": "docs/db-schema.md",
+      "refs": [
+        "§3~§24 전반"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-005",
+      "title": "마이그레이션: 공장 정보·직원 계정",
+      "summary": "공장 기본 정보 1행 테이블과 직원 계정 테이블을 만든다.",
+      "doc": "docs/tasks/T-005.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§2 사용자 구분",
+        "§23 공장 정보"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-006",
+      "title": "마이그레이션: 원청",
+      "summary": "원청 테이블에 기본 정보·정산 일정·이메일 기본 문구 컬럼을 만든다.",
+      "doc": "docs/tasks/T-006.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§3 원청 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-007",
+      "title": "마이그레이션: 품목·품목 이력",
+      "summary": "원청별 품목 테이블과 이름 변경·합치기 이력 테이블을 만든다.",
+      "doc": "docs/tasks/T-007.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§4 품목 관리",
+        "§4 품목명 변경 규칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-008",
+      "title": "마이그레이션: 사이즈",
+      "summary": "기본 사이즈 4종과 직접 입력 사이즈를 함께 담는 테이블을 만든다.",
+      "doc": "docs/tasks/T-008.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§5 사이즈 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-009",
+      "title": "마이그레이션: 송장·송장 품목 줄",
+      "summary": "송장 헤더와 품목 줄 테이블, 송장번호 시퀀스, 상태 컬럼을 만든다.",
+      "doc": "docs/tasks/T-009.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004",
+        "T-006",
+        "T-007"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§6 송장 작성",
+        "§7 임시 저장과 확정",
+        "§8 출력과 취소"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-010",
+      "title": "마이그레이션: 월별 봉제 단가",
+      "summary": "원청·품목·사이즈·적용 월 단위의 단가 테이블과 미정 상태를 만든다.",
+      "doc": "docs/tasks/T-010.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004",
+        "T-007",
+        "T-008"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§10 월별 봉제 단가",
+        "§12 단가 미정 처리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-011",
+      "title": "마이그레이션: 정산서·정산 내역",
+      "summary": "월별 정산서 헤더, 내역 줄, 승인·발송 상태, 수정본 회차 컬럼을 만든다.",
+      "doc": "docs/tasks/T-011.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004",
+        "T-009",
+        "T-010"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§13 월말 정산 기준",
+        "§16 정산 승인과 자동 발송",
+        "§21 수정 정산서"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-012",
+      "title": "마이그레이션: 변경 기록·발송 이력·알림",
+      "summary": "감사 로그, 이메일 발송 이력, 알림 테이블을 만든다.",
+      "doc": "docs/tasks/T-012.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "data",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-004"
+      ],
+      "where": "supabase/migrations/",
+      "refs": [
+        "§8 출력과 취소",
+        "§20 발송 실패 처리",
+        "§22 알림"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-013",
+      "title": "직원 로그인(계정 선택 방식)",
+      "summary": "로그인 화면에서 직원 계정을 고르면 비밀번호 없이 직원 세션이 시작되도록 만든다.",
+      "doc": "docs/tasks/T-013.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "auth",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-005"
+      ],
+      "where": "app/(auth)/",
+      "refs": [
+        "§2 직원",
+        "§25 사용자 선택 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-014",
+      "title": "사장님 모드 비밀번호 인증",
+      "summary": "아이디 없이 전용 비밀번호만으로 사장님 권한으로 승격하는 흐름을 만든다.",
+      "doc": "docs/tasks/T-014.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "auth",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-005",
+        "T-013"
+      ],
+      "where": "app/(auth)/owner/",
+      "refs": [
+        "§2 사장님",
+        "§25 사장님 비밀번호 입력 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-015",
+      "title": "사장님 비밀번호 변경·초기화 절차",
+      "summary": "사장님이 스스로 비밀번호를 바꾸는 화면과, 잊었을 때 개발자가 초기화하는 스크립트를 만든다.",
+      "doc": "docs/tasks/T-015.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "auth",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-014"
+      ],
+      "where": "scripts/reset-owner-password.ts",
+      "refs": [
+        "§2 사장님"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-016",
+      "title": "RLS·서버 권한 경계 구현",
+      "summary": "단가·금액·정산 데이터가 직원 세션으로는 아예 조회되지 않도록 DB와 서버 양쪽에서 막는다.",
+      "doc": "docs/tasks/T-016.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "auth",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-010",
+        "T-011",
+        "T-013",
+        "T-014"
+      ],
+      "where": "supabase/migrations/, lib/auth/",
+      "refs": [
+        "§2 직원에게 숨기는 정보",
+        "§26 직원의 단가 및 정산 금액 열람 제외"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-017",
+      "title": "공통 UI 기반(큰 글씨·큰 버튼·반응형)",
+      "summary": "주 사용자에 맞춘 디자인 토큰과 공통 컴포넌트(버튼·입력·표·다이얼로그)를 만든다.",
+      "doc": "docs/tasks/T-017.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "ui",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-002"
+      ],
+      "where": "app/globals.css, components/ui/",
+      "refs": [
+        "§1 프로젝트 목적"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-018",
+      "title": "역할별 네비게이션과 라우트 가드",
+      "summary": "직원/사장님 메뉴를 분리하고 사장님 전용 경로를 미들웨어에서 차단한다.",
+      "doc": "docs/tasks/T-018.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "auth",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-013",
+        "T-014",
+        "T-016",
+        "T-017"
+      ],
+      "where": "middleware.ts, components/nav/",
+      "refs": [
+        "§2 사용자 구분",
+        "§25 주요 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-019",
+      "title": "공장 정보 설정 화면",
+      "summary": "사장님이 공장명·대표자명·사업자등록번호·주소·전화번호를 수정하는 화면을 만든다.",
+      "doc": "docs/tasks/T-019.md",
+      "status": "blocked",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-005",
+        "T-018"
+      ],
+      "where": "app/owner/settings/factory/",
+      "refs": [
+        "§23 공장 정보"
+      ],
+      "note": "T-001에서 실제 공장 정보 값이 확정돼야 시드·검증을 끝낼 수 있다.",
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-020",
+      "title": "직원 계정 관리 화면",
+      "summary": "사장님이 직원 계정을 추가하고 사용 중지하는 화면을 만든다.",
+      "doc": "docs/tasks/T-020.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-005",
+        "T-018"
+      ],
+      "where": "app/owner/settings/staff/",
+      "refs": [
+        "§2 사장님 권한",
+        "§24 데이터 보존 원칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-021",
+      "title": "원청 목록 화면",
+      "summary": "원청 목록을 검색·정렬해 보여주고 사용 중지 상태를 구분해 표시한다.",
+      "doc": "docs/tasks/T-021.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-006",
+        "T-018"
+      ],
+      "where": "app/owner/clients/",
+      "refs": [
+        "§3 원청 관리",
+        "§25 원청 관리 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-022",
+      "title": "원청 등록·수정 폼",
+      "summary": "업체명·담당자·이메일·전화번호·납품 장소를 입력하고 저장하는 폼을 만든다.",
+      "doc": "docs/tasks/T-022.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-021"
+      ],
+      "where": "app/owner/clients/[id]/",
+      "refs": [
+        "§3 원청 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-023",
+      "title": "원청별 정산 일정 설정",
+      "summary": "정산서 자동 발송일과 사장님 확인 요청 기준일을 원청별로 설정한다.",
+      "doc": "docs/tasks/T-023.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-022"
+      ],
+      "where": "app/owner/clients/[id]/schedule/",
+      "refs": [
+        "§3 원청 관리",
+        "§16 정산 승인과 자동 발송",
+        "§22 알림"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-024",
+      "title": "원청별 이메일 기본 문구 설정",
+      "summary": "원청마다 이메일 제목·본문 기본 문구를 저장하고 치환 항목을 미리보기한다.",
+      "doc": "docs/tasks/T-024.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "email",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-022"
+      ],
+      "where": "app/owner/clients/[id]/email-template/",
+      "refs": [
+        "§19 이메일 발송",
+        "§25 이메일 문구 설정"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-025",
+      "title": "원청 사용 중지·재사용",
+      "summary": "원청을 삭제하지 않고 사용 중지하며, 과거 송장·정산은 그대로 유지한다.",
+      "doc": "docs/tasks/T-025.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-021"
+      ],
+      "where": "app/owner/clients/",
+      "refs": [
+        "§3 원청 관리",
+        "§24 데이터 보존 원칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-026",
+      "title": "원청별 품목 목록 화면",
+      "summary": "선택한 원청의 품목을 목록으로 보여주고 숨김·즐겨찾기 상태를 표시한다.",
+      "doc": "docs/tasks/T-026.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-007",
+        "T-018"
+      ],
+      "where": "app/owner/items/",
+      "refs": [
+        "§4 품목 관리",
+        "§25 품목 관리 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-027",
+      "title": "품목 추가·수정",
+      "summary": "원청에 구체적인 품목명을 등록하고 수정하는 기능을 만든다.",
+      "doc": "docs/tasks/T-027.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-026"
+      ],
+      "where": "app/owner/items/",
+      "refs": [
+        "§4 품목 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-028",
+      "title": "품목 검색(이전 이름 포함)",
+      "summary": "새 이름으로 검색해도 이전 이름으로 작성된 송장이 함께 조회되는 검색 로직을 만든다.",
+      "doc": "docs/tasks/T-028.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-007",
+        "T-026"
+      ],
+      "where": "lib/items/search.ts",
+      "refs": [
+        "§4 품목명 변경 규칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-029",
+      "title": "최근 사용 품목 우선 표시",
+      "summary": "송장 작성 시 최근에 쓴 품목이 목록 위에 오도록 사용 시각을 기록하고 정렬한다.",
+      "doc": "docs/tasks/T-029.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-026"
+      ],
+      "where": "lib/items/",
+      "refs": [
+        "§4 품목 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-030",
+      "title": "품목 즐겨찾기",
+      "summary": "자주 쓰는 품목을 즐겨찾기로 고정해 목록 맨 위에 두는 기능을 만든다.",
+      "doc": "docs/tasks/T-030.md",
+      "status": "todo",
+      "priority": "P3",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-026"
+      ],
+      "where": "app/owner/items/",
+      "refs": [
+        "§4 품목 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-031",
+      "title": "품목 숨김·다시 사용",
+      "summary": "생산이 끝난 품목을 숨기고 필요할 때 다시 사용하도록 되돌린다.",
+      "doc": "docs/tasks/T-031.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-026"
+      ],
+      "where": "app/owner/items/",
+      "refs": [
+        "§4 품목 관리",
+        "§24 데이터 보존 원칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-032",
+      "title": "품목명 변경(이력 보존)",
+      "summary": "품목 이름을 바꾸되 기존 송장에는 당시 이름을 그대로 남기는 기능을 만든다.",
+      "doc": "docs/tasks/T-032.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-007",
+        "T-027"
+      ],
+      "where": "app/owner/items/rename/",
+      "refs": [
+        "§4 품목명 변경 규칙",
+        "§25 품목명 변경·합치기"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-033",
+      "title": "여러 품목 합치기",
+      "summary": "중복 등록된 여러 품목을 하나의 최종 품목으로 합치고 정산서에서 통합 표시한다.",
+      "doc": "docs/tasks/T-033.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-032"
+      ],
+      "where": "app/owner/items/merge/",
+      "refs": [
+        "§4 품목 관리",
+        "§4 품목명 변경 규칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-034",
+      "title": "사이즈 관리(기본 4종 + 직접 입력)",
+      "summary": "싱글·슈퍼싱글·퀸·킹 기본 목록과 직접 입력 사이즈 저장·재사용을 구현한다.",
+      "doc": "docs/tasks/T-034.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "1. 마스터 데이터",
+      "estimate_min": 30,
+      "deps": [
+        "T-008"
+      ],
+      "where": "components/size-select/",
+      "refs": [
+        "§5 사이즈 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-035",
+      "title": "송장 작성 1단계: 원청 선택",
+      "summary": "사용 중인 원청만 큰 버튼으로 보여주고 선택하면 다음 단계로 넘어간다.",
+      "doc": "docs/tasks/T-035.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-021",
+        "T-025",
+        "T-017"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§6 송장 작성",
+        "§25 새 송장 작성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-036",
+      "title": "송장 작성 2단계: 품목 줄 입력 UI",
+      "summary": "품목 검색·선택과 줄 추가/삭제가 되는 송장 본문 입력 화면을 만든다.",
+      "doc": "docs/tasks/T-036.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-035",
+        "T-026",
+        "T-029",
+        "T-030"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§6 송장 작성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-037",
+      "title": "송장 줄: 사이즈 선택·수량 입력",
+      "summary": "각 품목 줄에서 사이즈를 고르고 수량을 '장' 단위로 입력한다.",
+      "doc": "docs/tasks/T-037.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-036",
+        "T-034"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§5 사이즈 관리",
+        "§6 송장 작성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-038",
+      "title": "송장 줄: 비고 입력과 줄 분리 규칙",
+      "summary": "품목별 비고를 입력하고, 같은 품목·사이즈라도 비고가 다르면 줄을 합치지 않는다.",
+      "doc": "docs/tasks/T-038.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-037"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§6 송장 작성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-039",
+      "title": "송장 작성 중 새 품목 바로 추가",
+      "summary": "검색 결과에 품목이 없을 때 작성 화면을 벗어나지 않고 품목을 등록한다.",
+      "doc": "docs/tasks/T-039.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-036",
+        "T-027"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§4 품목 관리",
+        "§6 송장 작성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-040",
+      "title": "납품 날짜 선택",
+      "summary": "오늘 날짜를 기본값으로 하고 이전 날짜로도 바꿀 수 있게 한다.",
+      "doc": "docs/tasks/T-040.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-036"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§6 납품 날짜"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-041",
+      "title": "임시 저장",
+      "summary": "작성 중인 송장을 서버에 임시 저장해 다른 기기에서 이어서 작성하게 한다.",
+      "doc": "docs/tasks/T-041.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-009",
+        "T-037"
+      ],
+      "where": "app/invoices/new/",
+      "refs": [
+        "§7 임시 저장과 확정"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-042",
+      "title": "임시 송장 목록 화면",
+      "summary": "임시 송장을 모아 보고 이어서 작성하거나 삭제한다.",
+      "doc": "docs/tasks/T-042.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-041"
+      ],
+      "where": "app/invoices/drafts/",
+      "refs": [
+        "§7 임시 저장과 확정",
+        "§25 임시 송장 목록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-043",
+      "title": "송장 최종 확인 화면",
+      "summary": "확정 직전에 전체 내용을 인쇄물과 같은 모습으로 크게 보여준다.",
+      "doc": "docs/tasks/T-043.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "ui",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-037",
+        "T-038",
+        "T-040"
+      ],
+      "where": "app/invoices/[id]/confirm/",
+      "refs": [
+        "§6 송장 작성",
+        "§25 송장 최종 확인"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-044",
+      "title": "송장 확정과 번호 부여",
+      "summary": "확정 시점에 이어지는 일련번호를 부여하고 상태를 confirmed로 바꾼다.",
+      "doc": "docs/tasks/T-044.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-009",
+        "T-043"
+      ],
+      "where": "lib/invoices/confirm.ts",
+      "refs": [
+        "§7 임시 저장과 확정"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-045",
+      "title": "송장 인쇄 레이아웃(A4 상하 2부)",
+      "summary": "A4 한 장에 같은 내용을 위아래 2부로 배치하고 가운데 절취선을 넣는다.",
+      "doc": "docs/tasks/T-045.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "report",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-044",
+        "T-019"
+      ],
+      "where": "app/invoices/[id]/print/",
+      "refs": [
+        "§8 출력 형식"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-046",
+      "title": "인쇄 다중 페이지 처리",
+      "summary": "품목이 많으면 여러 장으로 나누고 1/2, 2/2 페이지 번호를 넣는다.",
+      "doc": "docs/tasks/T-046.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "report",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-045"
+      ],
+      "where": "app/invoices/[id]/print/",
+      "refs": [
+        "§8 출력 형식"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-047",
+      "title": "인쇄 실행과 출력 시각 기록",
+      "summary": "인쇄 화면에서 인쇄를 실행하고 출력·재출력 시각을 내부 기록에 남긴다.",
+      "doc": "docs/tasks/T-047.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-045",
+        "T-012"
+      ],
+      "where": "app/invoices/[id]/print/",
+      "refs": [
+        "§8 출력과 취소",
+        "§25 송장 인쇄"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-048",
+      "title": "확정 송장 목록 화면",
+      "summary": "확정된 송장을 기간·원청·송장번호·품목으로 찾아본다.",
+      "doc": "docs/tasks/T-048.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-044",
+        "T-028"
+      ],
+      "where": "app/invoices/",
+      "refs": [
+        "§25 확정 송장 목록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-049",
+      "title": "송장 상세·재출력",
+      "summary": "확정 송장의 내용을 보고 같은 내용으로 다시 출력한다.",
+      "doc": "docs/tasks/T-049.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-048",
+        "T-047"
+      ],
+      "where": "app/invoices/[id]/",
+      "refs": [
+        "§8 출력과 취소",
+        "§25 송장 상세 및 재출력"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-050",
+      "title": "송장 취소 처리",
+      "summary": "잘못 발행된 송장을 취소 상태로 바꾸고 월말 정산에서 제외한다.",
+      "doc": "docs/tasks/T-050.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "2. 송장",
+      "estimate_min": 30,
+      "deps": [
+        "T-044",
+        "T-012"
+      ],
+      "where": "app/invoices/[id]/cancel/",
+      "refs": [
+        "§8 출력 후 수정"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-051",
+      "title": "월별 단가 관리 화면",
+      "summary": "원청과 적용 월을 고르면 품목×사이즈 단가표를 보여준다.",
+      "doc": "docs/tasks/T-051.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-010",
+        "T-018"
+      ],
+      "where": "app/owner/prices/",
+      "refs": [
+        "§10 월별 봉제 단가",
+        "§25 월별 단가 관리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-052",
+      "title": "단가 입력·수정",
+      "summary": "품목×사이즈 단가를 직접 입력하고 수정하며 이력을 남긴다.",
+      "doc": "docs/tasks/T-052.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-051"
+      ],
+      "where": "app/owner/prices/",
+      "refs": [
+        "§10 월별 봉제 단가",
+        "§11 예외 단가"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-053",
+      "title": "지난달 단가표 복사",
+      "summary": "새 달의 단가표를 만들 때 지난달 값을 한 번에 복사해 온다.",
+      "doc": "docs/tasks/T-053.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-051"
+      ],
+      "where": "app/owner/prices/copy/",
+      "refs": [
+        "§10 월별 단가표 생성"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-054",
+      "title": "단가 미정 목록",
+      "summary": "해당 월 송장에 있으나 단가가 없는 품목·사이즈를 원청별로 모아 보여준다.",
+      "doc": "docs/tasks/T-054.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-051",
+        "T-059"
+      ],
+      "where": "app/owner/prices/pending/",
+      "refs": [
+        "§12 단가 미정 처리",
+        "§25 단가 미정 목록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-055",
+      "title": "단가 일괄 붙여넣기 입력",
+      "summary": "원청이 회신한 엑셀 값을 여러 줄 복사해 한 번에 붙여 넣는다.",
+      "doc": "docs/tasks/T-055.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-054"
+      ],
+      "where": "app/owner/prices/paste/",
+      "refs": [
+        "§12 단가 미정 처리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-056",
+      "title": "송장 줄 ↔ 단가 자동 매칭",
+      "summary": "송장 줄의 원청·품목·사이즈·납품월로 적용 단가를 찾아내는 핵심 로직을 만든다.",
+      "doc": "docs/tasks/T-056.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-010",
+        "T-033",
+        "T-052"
+      ],
+      "where": "lib/prices/resolve.ts",
+      "refs": [
+        "§10 월별 봉제 단가",
+        "§11 예외 단가",
+        "§17 이월"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-057",
+      "title": "송장 줄 예외 단가",
+      "summary": "정산 화면에서 특정 줄의 단가만 바꾸고 그 줄만 다르게 계산한다.",
+      "doc": "docs/tasks/T-057.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-056",
+        "T-062"
+      ],
+      "where": "app/owner/settlements/[id]/",
+      "refs": [
+        "§11 특정 송장 줄의 예외 단가"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-058",
+      "title": "단가 변경 이력 기록·조회",
+      "summary": "기본 단가와 예외 단가의 변경 전후 값과 시각을 남기고 조회한다.",
+      "doc": "docs/tasks/T-058.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "3. 봉제 단가",
+      "estimate_min": 30,
+      "deps": [
+        "T-052",
+        "T-057",
+        "T-012"
+      ],
+      "where": "app/owner/prices/history/",
+      "refs": [
+        "§11 예외 단가",
+        "§25 변경 기록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-059",
+      "title": "월말 정산 내역 자동 생성",
+      "summary": "해당 월 1일~말일의 확정 송장을 모아 정산 내역 줄을 만든다.",
+      "doc": "docs/tasks/T-059.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-011",
+        "T-050",
+        "T-056"
+      ],
+      "where": "lib/settlements/build.ts",
+      "refs": [
+        "§13 월말 정산 기준"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-060",
+      "title": "정산 금액 계산 로직",
+      "summary": "공급가액·부가세·최종 합계를 요구사항대로 정확히 계산한다.",
+      "doc": "docs/tasks/T-060.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-059",
+        "T-056"
+      ],
+      "where": "lib/settlements/calc.ts",
+      "refs": [
+        "§14 정산 계산"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-061",
+      "title": "월별 정산 목록 화면",
+      "summary": "원청별·월별 정산서의 상태를 한 화면에서 파악한다.",
+      "doc": "docs/tasks/T-061.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-059",
+        "T-018"
+      ],
+      "where": "app/owner/settlements/",
+      "refs": [
+        "§25 월별 정산 목록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-062",
+      "title": "정산 상세 표 화면",
+      "summary": "엑셀을 받지 않고도 정산 내역 전체를 사이트에서 표로 확인한다.",
+      "doc": "docs/tasks/T-062.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-060",
+        "T-061",
+        "T-016"
+      ],
+      "where": "app/owner/settlements/[id]/",
+      "refs": [
+        "§15 정산 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-063",
+      "title": "정산 화면 단가 수정과 실시간 재계산",
+      "summary": "표에서 단가를 고치면 공급가액·부가세·최종 합계가 즉시 다시 계산된다.",
+      "doc": "docs/tasks/T-063.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-062",
+        "T-057",
+        "T-060"
+      ],
+      "where": "app/owner/settlements/[id]/",
+      "refs": [
+        "§15 정산 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-064",
+      "title": "정산 진입 시 미정 단가 점검",
+      "summary": "정산 상세에서 미정 단가가 몇 건인지 알리고 단가 확인 요청으로 연결한다.",
+      "doc": "docs/tasks/T-064.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-054",
+        "T-062"
+      ],
+      "where": "app/owner/settlements/[id]/",
+      "refs": [
+        "§12 단가 미정 처리",
+        "§16 정산 승인 흐름"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-065",
+      "title": "뒤늦은 송장 이월 판정 로직",
+      "summary": "이미 승인·발송된 월의 날짜로 확정된 송장을 다음 달 정산으로 넘긴다.",
+      "doc": "docs/tasks/T-065.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-059",
+        "T-067"
+      ],
+      "where": "lib/settlements/carryover.ts",
+      "refs": [
+        "§17 뒤늦게 등록된 송장 이월"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-066",
+      "title": "이월 송장 표시와 단가 적용",
+      "summary": "이월 줄은 실제 납품일을 그대로 쓰고 '전월 이월'로 표시하며 원래 달의 단가를 적용한다.",
+      "doc": "docs/tasks/T-066.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-065",
+        "T-056"
+      ],
+      "where": "lib/settlements/",
+      "refs": [
+        "§17 뒤늦게 등록된 송장 이월"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-067",
+      "title": "정산 최종 승인",
+      "summary": "사장님이 내역을 확인하고 최종 승인하면 자동 발송 대상이 된다.",
+      "doc": "docs/tasks/T-067.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-062",
+        "T-064"
+      ],
+      "where": "app/owner/settlements/[id]/approve/",
+      "refs": [
+        "§16 정산 승인과 자동 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-068",
+      "title": "승인 후 수정 시 승인 자동 취소",
+      "summary": "승인 후 발송 전에 내용이 바뀌면 승인을 풀고 '다시 확인 필요' 상태로 되돌린다.",
+      "doc": "docs/tasks/T-068.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "4. 월말 정산",
+      "estimate_min": 30,
+      "deps": [
+        "T-067",
+        "T-063"
+      ],
+      "where": "lib/settlements/approval.ts",
+      "refs": [
+        "§16 정산 승인과 자동 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-096",
+      "title": "기존 정산 엑셀 양식 확보·분석",
+      "summary": "지금 쓰고 있는 정산 엑셀 파일을 받아 필수 항목과 서식을 분석해야 최종 정산 엑셀을 만들 수 있다.",
+      "doc": "docs/tasks/T-096.md",
+      "status": "needs_decision",
+      "priority": "P0",
+      "category": "docs",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [],
+      "where": null,
+      "refs": [
+        "§18 최종 정산 엑셀"
+      ],
+      "note": "사장님이 실제 사용 중인 엑셀 파일 1~2개를 제공해야 한다. T-071이 이 결과에 의존한다.",
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-069",
+      "title": "단가 확인 요청 엑셀 생성",
+      "summary": "원청별 단가 미정 품목을 한 개의 엑셀 파일로 만들고 단가 입력란을 비워 둔다.",
+      "doc": "docs/tasks/T-069.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "report",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-054"
+      ],
+      "where": "lib/excel/price-request.ts",
+      "refs": [
+        "§12 단가 미정 처리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-070",
+      "title": "단가 확인 요청 미리보기와 수동 발송",
+      "summary": "사장님이 내용을 확인한 뒤 버튼을 눌러야만 단가 확인 요청 메일이 나가게 한다.",
+      "doc": "docs/tasks/T-070.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-069",
+        "T-074"
+      ],
+      "where": "app/owner/prices/request/",
+      "refs": [
+        "§12 단가 미정 처리",
+        "§25 단가 확인 요청서 미리보기"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-071",
+      "title": "최종 정산 엑셀 생성",
+      "summary": "정산서를 요구된 15개 항목이 담긴 엑셀 파일로 만든다.",
+      "doc": "docs/tasks/T-071.md",
+      "status": "blocked",
+      "priority": "P0",
+      "category": "report",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-060",
+        "T-096",
+        "T-019"
+      ],
+      "where": "lib/excel/settlement.ts",
+      "refs": [
+        "§18 최종 정산 엑셀"
+      ],
+      "note": "T-096에서 기존 엑셀 양식을 확보해야 서식을 확정할 수 있다.",
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-072",
+      "title": "엑셀 최종 품목명 병합 표시",
+      "summary": "이름이 바뀌거나 합쳐진 품목은 엑셀에 최종 품목명만 나오게 한다.",
+      "doc": "docs/tasks/T-072.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "report",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-071",
+        "T-033"
+      ],
+      "where": "lib/excel/settlement.ts",
+      "refs": [
+        "§4 품목명 변경 규칙",
+        "§18 최종 정산 엑셀"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-073",
+      "title": "이메일 발송 인프라 구축",
+      "summary": "사이트 전용 이메일 주소로 첨부 파일이 있는 메일을 보내는 발송 계층을 만든다.",
+      "doc": "docs/tasks/T-073.md",
+      "status": "blocked",
+      "priority": "P0",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-001"
+      ],
+      "where": "lib/email/",
+      "refs": [
+        "§19 이메일 발송"
+      ],
+      "note": "T-001에서 전용 이메일 주소와 발송 방식이 확정돼야 시작할 수 있다.",
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-074",
+      "title": "이메일 문구 치환과 발송 전 편집",
+      "summary": "저장된 기본 문구에 업체명·연월·파일명을 채우고, 발송 직전에 사장님이 고칠 수 있게 한다.",
+      "doc": "docs/tasks/T-074.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-073",
+        "T-024"
+      ],
+      "where": "app/owner/email/compose/",
+      "refs": [
+        "§19 이메일 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-075",
+      "title": "정산서 자동 발송 스케줄러",
+      "summary": "매일 정해진 시각에 돌며 그날이 발송일이고 승인된 정산서만 자동 발송한다.",
+      "doc": "docs/tasks/T-075.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-067",
+        "T-071",
+        "T-073",
+        "T-023"
+      ],
+      "where": "app/api/cron/send-settlements/",
+      "refs": [
+        "§16 정산 승인과 자동 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-076",
+      "title": "발송일 경과 후 '지금 발송'",
+      "summary": "발송일이 지난 뒤 승인한 경우 자동 발송하지 않고 수동 발송 버튼을 보여준다.",
+      "doc": "docs/tasks/T-076.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-075"
+      ],
+      "where": "app/owner/settlements/[id]/",
+      "refs": [
+        "§16 정산 승인과 자동 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-077",
+      "title": "발송 내역 화면",
+      "summary": "언제 어느 원청에 무엇을 보냈는지 목록으로 조회한다.",
+      "doc": "docs/tasks/T-077.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-073"
+      ],
+      "where": "app/owner/emails/",
+      "refs": [
+        "§25 발송 내역"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-078",
+      "title": "발송 실패 감지와 알림 생성",
+      "summary": "발송에 실패하면 사장님과 직원 화면 양쪽에 알림을 띄운다.",
+      "doc": "docs/tasks/T-078.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-073",
+        "T-083"
+      ],
+      "where": "lib/email/failure.ts",
+      "refs": [
+        "§20 발송 실패 처리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-079",
+      "title": "재발송과 알림 자동 해제",
+      "summary": "다시 보내기로 발송에 성공하면 관련 알림을 자동으로 없앤다.",
+      "doc": "docs/tasks/T-079.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "email",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-078"
+      ],
+      "where": "app/owner/emails/",
+      "refs": [
+        "§20 발송 실패 처리"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-080",
+      "title": "수정 정산서 생성",
+      "summary": "이미 발송한 정산서는 덮어쓰지 않고 회차가 붙은 수정본을 새로 만든다.",
+      "doc": "docs/tasks/T-080.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "report",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-071",
+        "T-068"
+      ],
+      "where": "lib/settlements/revision.ts",
+      "refs": [
+        "§21 발송 완료 후 수정 정산서"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-081",
+      "title": "발송본과 수정본 변경 내역 자동 비교",
+      "summary": "최초 발송본과 수정본을 비교해 무엇이 어떻게 바뀌었는지 문장으로 만든다.",
+      "doc": "docs/tasks/T-081.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "report",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-080"
+      ],
+      "where": "lib/settlements/diff.ts",
+      "refs": [
+        "§21 발송 완료 후 수정 정산서"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-082",
+      "title": "수정 정산서 확인·승인·발송 화면",
+      "summary": "자동 생성된 변경 내역을 사장님이 확인·수정하고 최종 승인 후 발송한다.",
+      "doc": "docs/tasks/T-082.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "feature",
+      "phase": "5. 엑셀·이메일",
+      "estimate_min": 30,
+      "deps": [
+        "T-081",
+        "T-074"
+      ],
+      "where": "app/owner/settlements/[id]/revision/",
+      "refs": [
+        "§21 발송 완료 후 수정 정산서",
+        "§25 수정 정산서 비교"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-083",
+      "title": "알림 생성 규칙 구현",
+      "summary": "설계의 알림 10종이 각각 언제 생기고 언제 사라지는지 규칙으로 구현한다.",
+      "doc": "docs/tasks/T-083.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "feature",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-012"
+      ],
+      "where": "lib/notifications/rules.ts",
+      "refs": [
+        "§22 알림"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-084",
+      "title": "사장님 알림 화면",
+      "summary": "사장님에게 필요한 알림 7종을 한 화면에 모아 바로 처리로 연결한다.",
+      "doc": "docs/tasks/T-084.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "ui",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-083"
+      ],
+      "where": "app/owner/notifications/",
+      "refs": [
+        "§22 사장님 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-085",
+      "title": "직원 알림 화면",
+      "summary": "직원에게는 금액 없는 알림 3종만 보여주고 발송 예정일 7일 전부터 표시한다.",
+      "doc": "docs/tasks/T-085.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "ui",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-083",
+        "T-016"
+      ],
+      "where": "app/notifications/",
+      "refs": [
+        "§22 직원 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-086",
+      "title": "사장님 대시보드",
+      "summary": "사장님이 들어오자마자 오늘 해야 할 일을 보는 첫 화면을 만든다.",
+      "doc": "docs/tasks/T-086.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "ui",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-061",
+        "T-084"
+      ],
+      "where": "app/owner/",
+      "refs": [
+        "§25 사장님 대시보드"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-087",
+      "title": "직원 첫 화면",
+      "summary": "직원이 로그인하면 '새 송장 만들기'가 가장 크게 보이는 단순한 첫 화면을 만든다.",
+      "doc": "docs/tasks/T-087.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "ui",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-042",
+        "T-085"
+      ],
+      "where": "app/",
+      "refs": [
+        "§25 직원 첫 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-088",
+      "title": "사용자 선택 화면",
+      "summary": "직원 계정 목록과 '사장님 모드' 진입을 한 화면에서 고르게 한다.",
+      "doc": "docs/tasks/T-088.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "ui",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-013",
+        "T-014"
+      ],
+      "where": "app/(auth)/select/",
+      "refs": [
+        "§25 공통 화면"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-089",
+      "title": "변경 기록 조회 화면",
+      "summary": "송장·단가·정산의 변경 전후 내용과 시각을 사장님이 조회한다.",
+      "doc": "docs/tasks/T-089.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "feature",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-012",
+        "T-058"
+      ],
+      "where": "app/owner/audit/",
+      "refs": [
+        "§8 출력과 취소",
+        "§25 변경 기록"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-090",
+      "title": "데이터 보존 원칙 전수 점검",
+      "summary": "원청·품목·직원 계정·확정 송장·발송 정산서·월별 단가에 물리 삭제 경로가 없는지 전수 확인한다.",
+      "doc": "docs/tasks/T-090.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "test",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-025",
+        "T-031",
+        "T-050",
+        "T-080"
+      ],
+      "where": "docs/retention-check.md",
+      "refs": [
+        "§24 데이터 보존 원칙"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-091",
+      "title": "반응형·접근성 점검",
+      "summary": "PC·태블릿·휴대폰 3개 환경에서 주요 화면을 직접 확인하고 글씨 크기와 터치 영역을 점검한다.",
+      "doc": "docs/tasks/T-091.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "test",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-017",
+        "T-086",
+        "T-087"
+      ],
+      "where": "docs/a11y-check.md",
+      "refs": [
+        "§1 프로젝트 목적"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-092",
+      "title": "정산 계산 회귀 테스트",
+      "summary": "단가 매칭·공급가액·부가세·이월·예외 단가를 케이스별로 검증하는 자동 테스트를 만든다.",
+      "doc": "docs/tasks/T-092.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "test",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-056",
+        "T-060",
+        "T-066"
+      ],
+      "where": "tests/settlement.test.ts",
+      "refs": [
+        "§11 예외 단가",
+        "§14 정산 계산",
+        "§17 이월"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-093",
+      "title": "송장번호 동시성 테스트",
+      "summary": "여러 기기가 동시에 확정해도 송장번호가 중복되거나 되돌아가지 않는지 검증한다.",
+      "doc": "docs/tasks/T-093.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "test",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-044"
+      ],
+      "where": "tests/invoice-number.test.ts",
+      "refs": [
+        "§7 임시 저장과 확정"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-094",
+      "title": "배포·환경변수·Cron 설정",
+      "summary": "Vercel에 배포하고 환경변수·Cron·도메인·접근 제한을 설정한다.",
+      "doc": "docs/tasks/T-094.md",
+      "status": "todo",
+      "priority": "P0",
+      "category": "infra",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-003",
+        "T-073",
+        "T-075",
+        "T-001"
+      ],
+      "where": "vercel.json, .env",
+      "refs": [
+        "§16 자동 발송",
+        "§19 이메일 발송"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
+      "id": "T-095",
+      "title": "인수 테스트 시나리오와 사용 안내",
+      "summary": "사장님과 직원이 실제로 한 달 업무를 돌려보는 시나리오를 만들고 간단한 사용 안내를 쓴다.",
+      "doc": "docs/tasks/T-095.md",
+      "status": "todo",
+      "priority": "P1",
+      "category": "docs",
+      "phase": "6. 알림·화면·마무리",
+      "estimate_min": 30,
+      "deps": [
+        "T-090",
+        "T-091",
+        "T-092",
+        "T-094"
+      ],
+      "where": "docs/uat.md",
+      "refs": [
+        "§25 주요 화면",
+        "§26 제외 기능"
+      ],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    }
+  ]
+}
