@@ -1,0 +1,19 @@
+{
+  "_comment": "코드 파일 줄 수 한도. warn_ratio 이상이면 경고, max 초과면 재작업 요구. 위에서부터 먼저 맞는 규칙을 쓴다.",
+  "warn_ratio": 0.85,
+  "rules": [
+    { "pattern": "supabase/migrations/**",           "max": 0,   "note": "SQL 마이그레이션은 제한하지 않는다" },
+    { "pattern": "tools/**",                          "max": 700, "note": "CLI·스크립트" },
+    { "pattern": "scripts/**",                        "max": 700, "note": "CLI·스크립트" },
+    { "pattern": "**/*.test.ts",                      "max": 400, "note": "테스트" },
+    { "pattern": "**/*.test.tsx",                     "max": 400, "note": "테스트" },
+    { "pattern": "tests/**",                          "max": 400, "note": "테스트" },
+    { "pattern": "app/api/**",                        "max": 150, "note": "API 라우트" },
+    { "pattern": "app/**/route.ts",                   "max": 150, "note": "API 라우트" },
+    { "pattern": "app/**/*.tsx",                      "max": 200, "note": "화면 컴포넌트" },
+    { "pattern": "components/**",                     "max": 200, "note": "화면 컴포넌트" },
+    { "pattern": "lib/**",                            "max": 250, "note": "도메인 로직" },
+    { "pattern": "hooks/**",                          "max": 250, "note": "훅" },
+    { "pattern": "**",                                "max": 250, "note": "기본값" }
+  ]
+}
