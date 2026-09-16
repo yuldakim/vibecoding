@@ -1,29 +1,9 @@
 // 설계.md §22 — 사장님 7종 + 직원 3종 알림의 생성 조건.
 // 직원 알림 함수는 파라미터·반환값에 금액 필드가 없다(컴파일 타임 방어).
 
+import { toKstDateString, daysBetween } from "../date/kst.ts";
+
 type SettlementState = { status: string; sentAt: string | null };
-
-const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-/**
- * `today`(실제 현재 시각)를 KST 달력 날짜 "YYYY-MM-DD"로 정규화한다.
- * `send_scheduled_date`는 시각 없는 date 컬럼(KST 기준 달력 날짜)인데,
- * `new Date(dateString) < new Date()`처럼 시각 있는 값과 그대로 비교하면
- * `new Date("2026-07-25")`가 UTC 자정(=KST 09:00)으로 해석돼 발송일 당일
- * 오전 9시부터 날짜가 이미 지난 것처럼 계산된다. 두 값을 같은 종류
- * (달력 날짜)로 맞춘 뒤 비교한다.
- */
-function toKstDateString(date: Date): string {
-  return new Date(date.getTime() + KST_OFFSET_MS).toISOString().slice(0, 10);
-}
-
-/** 두 "YYYY-MM-DD" 날짜 사이의 일수(a - b). 시각 없이 달력 날짜로만 계산한다. */
-function daysBetween(dateStrA: string, dateStrB: string): number {
-  const a = Date.parse(`${dateStrA}T00:00:00Z`);
-  const b = Date.parse(`${dateStrB}T00:00:00Z`);
-  return Math.round((a - b) / DAY_MS);
-}
 
 export function shouldNotifyPriceMissing(missingPriceCount: number): boolean {
   return missingPriceCount > 0;
