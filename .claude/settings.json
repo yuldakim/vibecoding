@@ -12,6 +12,17 @@
             "statusMessage": "백로그 접근 확인"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task-claimed-guard.sh",
+            "timeout": 10,
+            "statusMessage": "작업 착수 상태 확인"
+          }
+        ]
       }
     ],
     "PostToolUse": [

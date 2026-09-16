@@ -44,6 +44,18 @@ tool=$(printf '%s' "$input" | jq -r '.tool_name // ""')
 case "$tool" in
   Bash)
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // ""')
+    # heredoc 본문은 명령이 아니라 데이터다. 파일 이름을 문서에 적는 것까지
+    # 막으면 규칙 문서조차 쓸 수 없으므로, 본문을 떼어낸 뒤 검사한다.
+    cmd=$(printf '%s\n' "$cmd" | awk '
+      skip { if ($0 == delim) skip=0; next }
+      {
+        if (match($0, /<<-?[ \t]*'"'"'?[A-Za-z_][A-Za-z0-9_]*'"'"'?/)) {
+          delim = substr($0, RSTART, RLENGTH)
+          sub(/^<<-?[ \t]*/, "", delim); gsub(/['"'"'"]/, "", delim)
+          skip = 1
+        }
+        print
+      }')
     printf '%s' "$cmd" | grep -q 'backlog\.json' || exit 0
     # 정당한 경로는 통과: CLI 호출, git 명령(스테이징·조회)
     printf '%s' "$cmd" | grep -q 'tools/backlog\.mjs' && exit 0
