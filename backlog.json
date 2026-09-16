@@ -395,7 +395,8 @@
       "phase": "0. 기반 구축",
       "estimate_min": 30,
       "deps": [
-        "T-014"
+        "T-014",
+        "T-012"
       ],
       "where": "scripts/reset-owner-password.ts",
       "refs": [
