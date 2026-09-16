@@ -294,7 +294,7 @@
       "title": "마이그레이션: 정산서·정산 내역",
       "summary": "월별 정산서 헤더, 내역 줄, 승인·발송 상태, 수정본 회차 컬럼을 만든다.",
       "doc": "docs/tasks/T-011.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "data",
       "phase": "0. 기반 구축",
@@ -311,7 +311,7 @@
         "§21 수정 정산서"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
@@ -436,7 +436,7 @@
       "title": "공통 UI 기반(큰 글씨·큰 버튼·반응형)",
       "summary": "주 사용자에 맞춘 디자인 토큰과 공통 컴포넌트(버튼·입력·표·다이얼로그)를 만든다.",
       "doc": "docs/tasks/T-017.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "ui",
       "phase": "0. 기반 구축",
@@ -449,7 +449,7 @@
         "§1 프로젝트 목적"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
