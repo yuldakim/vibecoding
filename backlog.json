@@ -114,7 +114,7 @@
       "title": "Supabase 프로젝트 연결",
       "summary": "Supabase 프로젝트를 만들고 로컬 CLI·환경변수·클라이언트 헬퍼를 연결한다.",
       "doc": "docs/tasks/T-003.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "infra",
       "phase": "0. 기반 구축",
@@ -127,7 +127,7 @@
         "§24 데이터 보존 원칙"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
