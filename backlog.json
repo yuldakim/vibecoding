@@ -472,6 +472,25 @@
       "updated_at": "2026-09-16"
     },
     {
+      "id": "T-097",
+      "title": "Supabase CLI 원격 연결(supabase link)",
+      "summary": "PAT과 DB 비밀번호로 supabase link 수행 — 지금은 사용자만 줄 수 있는 값이 없어 MCP로 대체 중",
+      "doc": "docs/tasks/T-097.md",
+      "status": "todo",
+      "priority": "P2",
+      "category": "infra",
+      "phase": "0. 기반 구축",
+      "estimate_min": 30,
+      "deps": [
+        "T-003"
+      ],
+      "where": null,
+      "refs": [],
+      "note": null,
+      "done_at": null,
+      "updated_at": "2026-09-16"
+    },
+    {
       "id": "T-019",
       "title": "공장 정보 설정 화면",
       "summary": "사장님이 공장명·대표자명·사업자등록번호·주소·전화번호를 수정하는 화면을 만든다.",
