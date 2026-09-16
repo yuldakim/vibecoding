@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "backlog": "node tools/backlog.mjs",
-    "check:auth": "node --experimental-strip-types lib/auth/authorize.check.ts"
+    "check:auth": "node --experimental-strip-types lib/auth/authorize.check.ts",
+    "reset-owner-password": "node --env-file=.env.local --experimental-strip-types scripts/reset-owner-password.ts",
+    "check:notifications": "node --experimental-strip-types lib/notifications/rules.check.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
