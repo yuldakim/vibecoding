@@ -1,0 +1,82 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/backlog-guard.sh'",
+            "timeout": 10,
+            "statusMessage": "백로그 접근 확인"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/task-claimed-guard.sh'",
+            "timeout": 10,
+            "statusMessage": "작업 착수 상태 확인"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/ekwak/sd-day3/.codex/hooks/code-size-check.mjs'",
+            "timeout": 15,
+            "statusMessage": "코드 줄 수 확인"
+          },
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/lint-file.sh'",
+            "timeout": 60,
+            "statusMessage": "lint 실행"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/backlog-sync.sh'",
+            "timeout": 60,
+            "statusMessage": "백로그 동기화"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/session-branch.sh'",
+            "timeout": 10,
+            "statusMessage": "브랜치 확인"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ekwak/sd-day3/.codex/hooks/build-check.sh'",
+            "timeout": 300,
+            "statusMessage": "build 검증"
+          }
+        ]
+      }
+    ]
+  }
+}
