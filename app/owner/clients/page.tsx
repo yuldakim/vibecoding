@@ -5,6 +5,8 @@ import { escapeLike } from "@/lib/db/like";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, Th, Td } from "@/components/ui/table";
+import { ClientStatusToggle } from "./client-status-toggle";
+import { createClient } from "./actions";
 
 // 목록은 요청마다 새로 조회해야 한다 — 정적 프리렌더되면 새로 등록·중지한
 // 원청이 배포 전까지 안 보인다(과거 /staff 리뷰에서 지적된 패턴).
@@ -18,15 +20,22 @@ type Client = {
   is_active: boolean;
 };
 
+const ERROR_MESSAGES: Record<string, string> = {
+  missing: "필수 항목을 모두 입력하세요.",
+  invalid_email: "담당자 이메일 형식이 올바르지 않습니다.",
+  invalid_day: "발송일·검토일은 1~28 사이 숫자로 입력하세요.",
+  save_failed: "저장하지 못했습니다. 잠시 후 다시 시도하세요.",
+};
+
 export default async function OwnerClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; showInactive?: string }>;
+  searchParams: Promise<{ q?: string; showInactive?: string; error?: string; created?: string }>;
 }) {
   const session = await getSessionForRole("owner");
   if (!session) redirect("/owner");
 
-  const { q, showInactive } = await searchParams;
+  const { q, showInactive, error: errorCode, created } = await searchParams;
   const includeInactive = showInactive === "1";
 
   const supabase = createServiceClient();
@@ -42,6 +51,20 @@ export default async function OwnerClientsPage({
   return (
     <main className="flex flex-col gap-6 p-8">
       <h1 className="text-2xl font-bold">원청 관리</h1>
+
+      {errorCode && <p className="text-lg text-danger">{ERROR_MESSAGES[errorCode] ?? "처리하지 못했습니다."}</p>}
+      {created === "1" && <p className="text-lg text-primary">새 원청을 등록했습니다.</p>}
+
+      <form action={createClient} className="flex flex-wrap items-end gap-3 rounded-lg border border-border p-4">
+        <Input id="name" name="name" label="업체명" />
+        <Input id="contact_name" name="contact_name" label="담당자명" />
+        <Input id="contact_email" name="contact_email" type="email" label="담당자 이메일" />
+        <Input id="phone" name="phone" label="전화번호" />
+        <Input id="address" name="address" label="주소" />
+        <Input id="auto_send_day" name="auto_send_day" type="number" min={1} max={28} label="정산서 발송일" />
+        <Input id="owner_review_day" name="owner_review_day" type="number" min={1} max={28} label="사장님 검토일" />
+        <Button type="submit">원청 등록</Button>
+      </form>
 
       <form method="get" className="flex flex-wrap items-end gap-4">
         <Input id="q" name="q" label="업체명 검색" defaultValue={q ?? ""} placeholder="예: 이불나라" />
@@ -67,6 +90,7 @@ export default async function OwnerClientsPage({
                   <Th>담당자</Th>
                   <Th>발송일</Th>
                   <Th>상태</Th>
+                  <Th>관리</Th>
                 </tr>
               </thead>
               <tbody>
@@ -80,6 +104,9 @@ export default async function OwnerClientsPage({
                     <Td>{c.contact_name}</Td>
                     <Td>매월 {c.auto_send_day}일</Td>
                     <Td>{c.is_active ? "사용 중" : <span className="text-zinc-600">사용 중지</span>}</Td>
+                    <Td>
+                      <ClientStatusToggle id={c.id} name={c.name} isActive={c.is_active} />
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -97,6 +124,9 @@ export default async function OwnerClientsPage({
                 <p className={`text-lg ${c.is_active ? "" : "text-zinc-600"}`}>
                   {c.is_active ? "사용 중" : "사용 중지"}
                 </p>
+                <div className="mt-2">
+                  <ClientStatusToggle id={c.id} name={c.name} isActive={c.is_active} />
+                </div>
               </li>
             ))}
           </ul>

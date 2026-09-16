@@ -35,7 +35,7 @@ export default async function StaffSettingsPage() {
           <li
             key={account.id}
             className={`flex h-14 items-center justify-between rounded-lg border border-border px-4 text-lg ${
-              account.is_active ? "" : "text-zinc-400"
+              account.is_active ? "" : "text-zinc-600"
             }`}
           >
             <span>

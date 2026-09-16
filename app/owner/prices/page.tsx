@@ -6,6 +6,7 @@ import { toKstYearMonth } from "@/lib/date/kst";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, Th, Td } from "@/components/ui/table";
+import { PriceCell } from "./price-cell";
 
 export const dynamic = "force-dynamic";
 
@@ -131,20 +132,17 @@ export default async function OwnerPricesPage({
             {items.map((item) => (
               <tr key={item.id}>
                 <Td>{item.name}</Td>
-                {sizes.map((size) => {
-                  const price = priceMap.get(`${item.id}-${size.id}`);
-                  return (
-                    <Td key={size.id}>
-                      {price == null ? (
-                        <span className="rounded bg-danger/10 px-2 py-1 font-semibold text-danger">
-                          미정
-                        </span>
-                      ) : (
-                        `${price.toLocaleString()}원`
-                      )}
-                    </Td>
-                  );
-                })}
+                {sizes.map((size) => (
+                  <Td key={size.id}>
+                    <PriceCell
+                      clientId={clientId}
+                      itemId={item.id}
+                      sizeId={size.id}
+                      priceMonth={priceMonth}
+                      initialValue={priceMap.get(`${item.id}-${size.id}`) ?? null}
+                    />
+                  </Td>
+                ))}
               </tr>
             ))}
           </tbody>
