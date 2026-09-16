@@ -7,7 +7,7 @@ import { encodeSession, SESSION_COOKIE } from "@/lib/auth/session";
 
 export async function selectStaffAccount(formData: FormData) {
   const staffId = Number(formData.get("staffId"));
-  if (!Number.isInteger(staffId)) redirect("/staff");
+  if (!Number.isInteger(staffId)) redirect("/select");
 
   const supabase = createServiceClient();
   const { data: account } = await supabase
@@ -16,7 +16,7 @@ export async function selectStaffAccount(formData: FormData) {
     .eq("id", staffId)
     .eq("is_active", true)
     .maybeSingle();
-  if (!account) redirect("/staff");
+  if (!account) redirect("/select");
 
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, encodeSession({ role: "staff", staffId }), {
@@ -31,5 +31,5 @@ export async function selectStaffAccount(formData: FormData) {
 export async function logoutStaff() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE);
-  redirect("/staff");
+  redirect("/select");
 }

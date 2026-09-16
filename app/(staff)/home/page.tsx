@@ -1,12 +1,11 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { decodeSession, SESSION_COOKIE } from "@/lib/auth/session";
+import { getSessionForRole } from "@/lib/auth/session-guard";
 import { logoutStaff } from "@/app/(auth)/staff/actions";
 
 export default async function StaffHomePage() {
-  const cookieStore = await cookies();
-  const session = decodeSession(cookieStore.get(SESSION_COOKIE)?.value);
-  if (!session || session.role !== "staff") redirect("/staff");
+  // "staff" 요구는 staff·owner 세션 둘 다 통과한다(사장님=직원 권한 포함, §2).
+  const session = await getSessionForRole("staff");
+  if (!session) redirect("/select");
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-4 p-8">

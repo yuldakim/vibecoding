@@ -1,37 +1,9 @@
-import { createServiceClient } from "@/lib/supabase/server";
-import { selectStaffAccount } from "./actions";
+import { redirect } from "next/navigation";
 
-// 직원 목록은 요청마다 새로 조회해야 한다 — 정적 프리렌더되면 배포 시점
-// 계정 목록이 굳어버려 이후 추가·중지된 계정이 반영되지 않는다.
-export const dynamic = "force-dynamic";
-
-export default async function StaffSelectPage() {
-  const supabase = createServiceClient();
-  const { data: accounts } = await supabase
-    .from("staff_accounts")
-    .select("id, name")
-    .eq("is_active", true)
-    .order("name");
-
-  return (
-    <main className="flex min-h-screen flex-col items-center gap-4 p-8">
-      <h1 className="text-2xl font-bold">직원 선택</h1>
-      {!accounts?.length && (
-        <p className="text-lg text-zinc-600">등록된 직원 계정이 없습니다. 사장님께 문의하세요.</p>
-      )}
-      <div className="flex w-full max-w-sm flex-col gap-3">
-        {accounts?.map((account) => (
-          <form key={account.id} action={selectStaffAccount}>
-            <input type="hidden" name="staffId" value={account.id} />
-            <button
-              type="submit"
-              className="h-14 w-full rounded-lg bg-blue-600 text-lg font-semibold text-white hover:bg-blue-700"
-            >
-              {account.name}
-            </button>
-          </form>
-        ))}
-      </div>
-    </main>
-  );
+// T-088에서 이 화면을 /select로 흡수했다(직원 목록 + 사장님 모드 버튼을
+// 한 화면에서 보여주는 게 §25 "사용자 선택 화면" 요구사항이라서). 로직·조회는
+// ./actions.ts에 남아 있고(다른 화면이 재사용), 여기는 옛 경로로 들어온
+// 사람을 새 화면으로 보내기만 한다.
+export default function StaffSelectRedirectPage() {
+  redirect("/select");
 }

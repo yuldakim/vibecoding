@@ -1,12 +1,10 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { decodeSession, SESSION_COOKIE } from "@/lib/auth/session";
+import { getSessionForRole } from "@/lib/auth/session-guard";
 import { logoutOwner } from "@/app/(auth)/owner/actions";
 
 export default async function OwnerHomePage() {
-  const cookieStore = await cookies();
-  const session = decodeSession(cookieStore.get(SESSION_COOKIE)?.value);
-  if (!session || session.role !== "owner") redirect("/owner");
+  const session = await getSessionForRole("owner");
+  if (!session) redirect("/owner");
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-4 p-8">
