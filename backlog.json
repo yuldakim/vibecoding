@@ -476,7 +476,7 @@
       "title": "Supabase CLI 원격 연결(supabase link)",
       "summary": "PAT과 DB 비밀번호로 supabase link 수행 — 지금은 사용자만 줄 수 있는 값이 없어 MCP로 대체 중",
       "doc": "docs/tasks/T-097.md",
-      "status": "todo",
+      "status": "needs_decision",
       "priority": "P2",
       "category": "infra",
       "phase": "0. 기반 구축",
@@ -486,7 +486,7 @@
       ],
       "where": null,
       "refs": [],
-      "note": null,
+      "note": "사용자에게 Supabase PAT(Personal Access Token)과 DB 비밀번호를 받아야 supabase login --token / supabase link --project-ref mbszzaxgkmrsgjoaedbo --password 를 실행할 수 있음. 지금은 MCP(mcp__supabase__*)로 마이그레이션 적용을 대체 중.",
       "done_at": null,
       "updated_at": "2026-09-16"
     },
