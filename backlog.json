@@ -95,7 +95,7 @@
       "title": "Next.js 프로젝트 초기화",
       "summary": "Next.js App Router + TypeScript + Tailwind로 저장소를 초기화하고 기본 레이아웃과 lint/format을 세운다.",
       "doc": "docs/tasks/T-002.md",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "category": "infra",
       "phase": "0. 기반 구축",
