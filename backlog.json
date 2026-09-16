@@ -156,7 +156,7 @@
       "title": "마이그레이션: 공장 정보·직원 계정",
       "summary": "공장 기본 정보 1행 테이블과 직원 계정 테이블을 만든다.",
       "doc": "docs/tasks/T-005.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "data",
       "phase": "0. 기반 구축",
@@ -170,7 +170,7 @@
         "§23 공장 정보"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
@@ -178,7 +178,7 @@
       "title": "마이그레이션: 원청",
       "summary": "원청 테이블에 기본 정보·정산 일정·이메일 기본 문구 컬럼을 만든다.",
       "doc": "docs/tasks/T-006.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "data",
       "phase": "0. 기반 구축",
@@ -191,7 +191,7 @@
         "§3 원청 관리"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
@@ -222,7 +222,7 @@
       "title": "마이그레이션: 사이즈",
       "summary": "기본 사이즈 4종과 직접 입력 사이즈를 함께 담는 테이블을 만든다.",
       "doc": "docs/tasks/T-008.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P1",
       "category": "data",
       "phase": "0. 기반 구축",
@@ -235,7 +235,7 @@
         "§5 사이즈 관리"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-16",
       "updated_at": "2026-09-16"
     },
     {
