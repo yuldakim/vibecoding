@@ -723,7 +723,7 @@
       "title": "최근 사용 품목 우선 표시",
       "summary": "송장 작성 시 최근에 쓴 품목이 목록 위에 오도록 사용 시각을 기록하고 정렬한다.",
       "doc": "docs/tasks/T-029.md",
-      "status": "in_progress",
+      "status": "blocked",
       "priority": "P2",
       "category": "feature",
       "phase": "1. 마스터 데이터",
@@ -735,9 +735,9 @@
       "refs": [
         "§4 품목 관리"
       ],
-      "note": null,
+      "note": "sortByFavoriteThenRecency는 구현·연결·검증됨(app/owner/items/page.tsx). 다만 touchItemLastUsed를 호출하는 곳이 없어(T-044 송장 확정 미구현) '직전 송장에 쓴 품목이 최상단' 기준은 실사용에서 아직 참이 될 수 없음. adversarial-reviewer 지적으로 done 대신 blocked. T-044가 touchItemLastUsed를 호출하게 되면 자동 충족.",
       "done_at": null,
-      "updated_at": "2026-09-16"
+      "updated_at": "2026-09-17"
     },
     {
       "id": "T-030",
