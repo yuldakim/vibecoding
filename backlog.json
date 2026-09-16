@@ -205,7 +205,8 @@
       "phase": "0. 기반 구축",
       "estimate_min": 30,
       "deps": [
-        "T-004"
+        "T-004",
+        "T-006"
       ],
       "where": "supabase/migrations/",
       "refs": [
@@ -250,7 +251,8 @@
       "deps": [
         "T-004",
         "T-006",
-        "T-007"
+        "T-007",
+        "T-008"
       ],
       "where": "supabase/migrations/",
       "refs": [
@@ -274,6 +276,7 @@
       "estimate_min": 30,
       "deps": [
         "T-004",
+        "T-006",
         "T-007",
         "T-008"
       ],
@@ -322,7 +325,9 @@
       "phase": "0. 기반 구축",
       "estimate_min": 30,
       "deps": [
-        "T-004"
+        "T-004",
+        "T-006",
+        "T-011"
       ],
       "where": "supabase/migrations/",
       "refs": [
