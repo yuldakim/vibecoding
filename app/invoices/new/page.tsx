@@ -4,19 +4,17 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { escapeLike } from "@/lib/db/like";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { LineEditor } from "./line-editor";
+import { startDraftInvoice } from "./actions";
 
 // 사용 중지된 원청이 새로 등록·복구된 것과 같은 요청 안에서 바로 반영돼야
 // 한다 — 정적 프리렌더되면 배포 시점 목록이 굳는다(다른 화면들과 같은 이유).
 export const dynamic = "force-dynamic";
 
-type SearchParams = { q?: string; clientId?: string; itemQ?: string; line?: string | string[] };
+type SearchParams = { q?: string; error?: string };
 
-function pickerHref(id: number, q: string | undefined) {
-  const params = new URLSearchParams({ clientId: String(id) });
-  if (q) params.set("q", q);
-  return `/invoices/new?${params.toString()}`;
-}
+const ERROR_MESSAGES: Record<string, string> = {
+  save_failed: "송장을 시작하지 못했습니다. 잠시 후 다시 시도하세요.",
+};
 
 export default async function NewInvoicePage({
   searchParams,
@@ -26,14 +24,11 @@ export default async function NewInvoicePage({
   const session = await getSessionForRole("staff");
   if (!session) redirect("/select");
 
-  const { q, clientId, itemQ, line } = await searchParams;
+  const { q, error } = await searchParams;
   const supabase = createServiceClient();
   let query = supabase.from("clients").select("id, name").eq("is_active", true).order("name");
   if (q) query = query.ilike("name", `%${escapeLike(q)}%`);
-  const { data: clients, error } = await query;
-
-  const selectedId = clientId ? Number(clientId) : NaN;
-  const selected = clients?.find((c) => c.id === selectedId);
+  const { data: clients, error: loadError } = await query;
 
   return (
     <main className="flex flex-col gap-6 p-8">
@@ -45,43 +40,27 @@ export default async function NewInvoicePage({
         <Button type="submit">검색</Button>
       </form>
 
-      {error && (
+      {error && <p className="text-lg text-danger">{ERROR_MESSAGES[error] ?? "처리하지 못했습니다."}</p>}
+      {loadError && (
         <p className="text-lg text-danger">원청 목록을 불러오지 못했습니다. 잠시 후 다시 시도하세요.</p>
       )}
-      {!error && !clients?.length && (
+      {!loadError && !clients?.length && (
         <p className="text-lg text-zinc-600">
           {q ? "검색 결과가 없습니다." : "사용 중인 원청이 없습니다."}
         </p>
       )}
 
-      {!error && clients && clients.length > 0 && (
+      {!loadError && clients && clients.length > 0 && (
         <div className="flex flex-col gap-3">
           {clients.map((c) => (
-            <a
-              key={c.id}
-              href={pickerHref(c.id, q)}
-              className={`flex min-h-14 items-center rounded-lg border px-6 py-2 text-lg font-semibold ${
-                c.id === selectedId ? "border-primary bg-primary/10" : "border-border hover:bg-black/5"
-              }`}
-            >
-              {c.name}
-            </a>
+            <form key={c.id} action={startDraftInvoice}>
+              <input type="hidden" name="clientId" value={c.id} />
+              <Button type="submit" variant="secondary" className="w-full text-left">
+                {c.name}
+              </Button>
+            </form>
           ))}
         </div>
-      )}
-
-      {selected && (
-        <>
-          <p className="text-lg">
-            <strong>{selected.name}</strong>을(를) 선택했습니다.
-          </p>
-          <LineEditor
-            clientId={selected.id}
-            q={q ?? ""}
-            itemQuery={itemQ ?? ""}
-            rawLines={Array.isArray(line) ? line : line ? [line] : []}
-          />
-        </>
       )}
     </main>
   );
