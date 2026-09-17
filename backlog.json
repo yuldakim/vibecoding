@@ -1322,7 +1322,7 @@
       "title": "송장 줄 ↔ 단가 자동 매칭",
       "summary": "송장 줄의 원청·품목·사이즈·납품월로 적용 단가를 찾아내는 핵심 로직을 만든다.",
       "doc": "docs/tasks/T-056.md",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "category": "feature",
       "phase": "3. 봉제 단가",
@@ -1340,7 +1340,7 @@
       ],
       "note": null,
       "done_at": null,
-      "updated_at": "2026-09-16"
+      "updated_at": "2026-09-17"
     },
     {
       "id": "T-057",
