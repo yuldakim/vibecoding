@@ -16,8 +16,13 @@ export async function toggleClientActive(id: number, nextActive: boolean) {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REQUIRED_FIELDS = ["name", "contact_name", "contact_email", "phone", "address"] as const;
 
-function isValidDay(n: number) {
-  return Number.isInteger(n) && n >= 1 && n <= 28;
+// 발송일은 최소 2일이어야 한다 — 검토일은 발송일보다 앞서야 하는데(T-023),
+// 발송일이 1일이면 그 조건을 만족하는 검토일이 존재하지 않는다.
+function isValidSendDay(n: number) {
+  return Number.isInteger(n) && n >= 2 && n <= 31;
+}
+function isValidReviewDay(n: number) {
+  return Number.isInteger(n) && n >= 1 && n <= 31;
 }
 
 export async function createClient(formData: FormData) {
@@ -31,9 +36,10 @@ export async function createClient(formData: FormData) {
   const missing = REQUIRED_FIELDS.filter((f) => !values[f]);
   if (missing.length > 0) redirect(`/owner/clients?error=missing&fields=${missing.join(",")}`);
   if (!EMAIL_RE.test(values.contact_email)) redirect("/owner/clients?error=invalid_email");
-  if (!isValidDay(autoSendDay) || !isValidDay(ownerReviewDay)) {
+  if (!isValidSendDay(autoSendDay) || !isValidReviewDay(ownerReviewDay)) {
     redirect("/owner/clients?error=invalid_day");
   }
+  if (ownerReviewDay >= autoSendDay) redirect("/owner/clients?error=review_after_send");
 
   const supabase = createServiceClient();
   const { error } = await supabase.from("clients").insert({

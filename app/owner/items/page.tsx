@@ -129,11 +129,19 @@ export default async function OwnerItemsPage({
                 </Td>
                 <Td>{item.last_used_at ? formatKstDate(item.last_used_at) : "-"}</Td>
                 <Td>
-                  <form action={toggleItemHidden.bind(null, item.id, selectedClientId, !item.is_hidden)}>
-                    <Button type="submit" variant={item.is_hidden ? "secondary" : "danger"}>
-                      {item.is_hidden ? "복구" : "숨기기"}
-                    </Button>
-                  </form>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={`/owner/items/rename?itemId=${item.id}&clientId=${selectedClientId}`}
+                      className="text-lg text-primary underline"
+                    >
+                      이름 변경
+                    </a>
+                    <form action={toggleItemHidden.bind(null, item.id, selectedClientId, !item.is_hidden)}>
+                      <Button type="submit" variant={item.is_hidden ? "secondary" : "danger"}>
+                        {item.is_hidden ? "복구" : "숨기기"}
+                      </Button>
+                    </form>
+                  </div>
                 </Td>
               </tr>
             ))}

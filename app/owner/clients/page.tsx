@@ -17,13 +17,15 @@ type Client = {
   name: string;
   contact_name: string;
   auto_send_day: number;
+  owner_review_day: number;
   is_active: boolean;
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
   missing: "필수 항목을 모두 입력하세요.",
   invalid_email: "담당자 이메일 형식이 올바르지 않습니다.",
-  invalid_day: "발송일·검토일은 1~28 사이 숫자로 입력하세요.",
+  invalid_day: "발송일은 2~31, 검토일은 1~31 사이 숫자로 입력하세요.",
+  review_after_send: "검토일은 발송일보다 앞선 날짜여야 합니다.",
   save_failed: "저장하지 못했습니다. 잠시 후 다시 시도하세요.",
 };
 
@@ -41,7 +43,7 @@ export default async function OwnerClientsPage({
   const supabase = createServiceClient();
   let query = supabase
     .from("clients")
-    .select("id, name, contact_name, auto_send_day, is_active")
+    .select("id, name, contact_name, auto_send_day, owner_review_day, is_active")
     .order("name");
   if (q) query = query.ilike("name", `%${escapeLike(q)}%`);
   if (!includeInactive) query = query.eq("is_active", true);
@@ -61,8 +63,8 @@ export default async function OwnerClientsPage({
         <Input id="contact_email" name="contact_email" type="email" label="담당자 이메일" />
         <Input id="phone" name="phone" label="전화번호" />
         <Input id="address" name="address" label="주소" />
-        <Input id="auto_send_day" name="auto_send_day" type="number" min={1} max={28} label="정산서 발송일" />
-        <Input id="owner_review_day" name="owner_review_day" type="number" min={1} max={28} label="사장님 검토일" />
+        <Input id="auto_send_day" name="auto_send_day" type="number" min={2} max={31} label="정산서 발송일" />
+        <Input id="owner_review_day" name="owner_review_day" type="number" min={1} max={31} label="사장님 검토일" />
         <Button type="submit">원청 등록</Button>
       </form>
 
@@ -88,7 +90,7 @@ export default async function OwnerClientsPage({
                 <tr>
                   <Th>업체명</Th>
                   <Th>담당자</Th>
-                  <Th>발송일</Th>
+                  <Th>발송일·검토일</Th>
                   <Th>상태</Th>
                   <Th>관리</Th>
                 </tr>
@@ -102,7 +104,7 @@ export default async function OwnerClientsPage({
                       </a>
                     </Td>
                     <Td>{c.contact_name}</Td>
-                    <Td>매월 {c.auto_send_day}일</Td>
+                    <Td>매월 {c.auto_send_day}일 발송 · {c.owner_review_day}일부터 확인</Td>
                     <Td>{c.is_active ? "사용 중" : <span className="text-zinc-600">사용 중지</span>}</Td>
                     <Td>
                       <ClientStatusToggle id={c.id} name={c.name} isActive={c.is_active} />
@@ -120,7 +122,9 @@ export default async function OwnerClientsPage({
                   {c.name}
                 </a>
                 <p className="text-lg">담당자: {c.contact_name}</p>
-                <p className="text-lg">발송일: 매월 {c.auto_send_day}일</p>
+                <p className="text-lg">
+                  발송일: 매월 {c.auto_send_day}일 · 검토일: {c.owner_review_day}일부터
+                </p>
                 <p className={`text-lg ${c.is_active ? "" : "text-zinc-600"}`}>
                   {c.is_active ? "사용 중" : "사용 중지"}
                 </p>

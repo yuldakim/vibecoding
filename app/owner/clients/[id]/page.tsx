@@ -63,6 +63,15 @@ export default async function ClientDetailPage({
       )}
       {sp.saved === "1" && <p className="text-lg text-primary">저장했습니다.</p>}
 
+      <div className="flex gap-4">
+        <a href={`/owner/clients/${client.id}/schedule`} className="text-lg text-primary underline">
+          정산 일정 설정
+        </a>
+        <a href={`/owner/clients/${client.id}/email-template`} className="text-lg text-primary underline">
+          이메일 문구 설정
+        </a>
+      </div>
+
       <form action={updateClient} className="flex max-w-sm flex-col gap-4">
         <input type="hidden" name="id" value={client.id} />
         <Input id="name" name="name" label="업체명" defaultValue={fieldValue("name", client.name)} />

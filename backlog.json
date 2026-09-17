@@ -590,7 +590,7 @@
       "title": "원청별 정산 일정 설정",
       "summary": "정산서 자동 발송일과 사장님 확인 요청 기준일을 원청별로 설정한다.",
       "doc": "docs/tasks/T-023.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P1",
       "category": "feature",
       "phase": "1. 마스터 데이터",
@@ -605,7 +605,7 @@
         "§22 알림"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-17",
       "updated_at": "2026-09-17"
     },
     {
@@ -613,7 +613,7 @@
       "title": "원청별 이메일 기본 문구 설정",
       "summary": "원청마다 이메일 제목·본문 기본 문구를 저장하고 치환 항목을 미리보기한다.",
       "doc": "docs/tasks/T-024.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P2",
       "category": "email",
       "phase": "1. 마스터 데이터",
@@ -627,7 +627,7 @@
         "§25 이메일 문구 설정"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-17",
       "updated_at": "2026-09-17"
     },
     {
@@ -787,7 +787,7 @@
       "title": "품목명 변경(이력 보존)",
       "summary": "품목 이름을 바꾸되 기존 송장에는 당시 이름을 그대로 남기는 기능을 만든다.",
       "doc": "docs/tasks/T-032.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P1",
       "category": "feature",
       "phase": "1. 마스터 데이터",
@@ -802,7 +802,7 @@
         "§25 품목명 변경·합치기"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-17",
       "updated_at": "2026-09-17"
     },
     {
@@ -853,7 +853,7 @@
       "title": "송장 작성 1단계: 원청 선택",
       "summary": "사용 중인 원청만 큰 버튼으로 보여주고 선택하면 다음 단계로 넘어간다.",
       "doc": "docs/tasks/T-035.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "feature",
       "phase": "2. 송장",
@@ -869,7 +869,7 @@
         "§25 새 송장 작성"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-17",
       "updated_at": "2026-09-17"
     },
     {
