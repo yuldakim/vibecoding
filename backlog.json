@@ -810,7 +810,7 @@
       "title": "여러 품목 합치기",
       "summary": "중복 등록된 여러 품목을 하나의 최종 품목으로 합치고 정산서에서 통합 표시한다.",
       "doc": "docs/tasks/T-033.md",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P1",
       "category": "feature",
       "phase": "1. 마스터 데이터",
@@ -825,7 +825,7 @@
       ],
       "note": null,
       "done_at": null,
-      "updated_at": "2026-09-16"
+      "updated_at": "2026-09-17"
     },
     {
       "id": "T-034",
