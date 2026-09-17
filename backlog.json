@@ -901,7 +901,7 @@
       "title": "송장 줄: 사이즈 선택·수량 입력",
       "summary": "각 품목 줄에서 사이즈를 고르고 수량을 '장' 단위로 입력한다.",
       "doc": "docs/tasks/T-037.md",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "category": "feature",
       "phase": "2. 송장",
@@ -917,7 +917,7 @@
       ],
       "note": null,
       "done_at": null,
-      "updated_at": "2026-09-16"
+      "updated_at": "2026-09-17"
     },
     {
       "id": "T-038",
