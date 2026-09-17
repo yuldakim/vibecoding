@@ -91,6 +91,12 @@ export default async function OwnerItemsPage({
 
       {!clients?.length && <p className="text-lg text-zinc-600">등록된 원청이 없습니다.</p>}
 
+      {selectedClientId && (
+        <a href={`/owner/items/merge?clientId=${selectedClientId}`} className="text-lg text-primary underline">
+          여러 품목 합치기
+        </a>
+      )}
+
       {errorCode && (
         <p className="text-lg text-danger">{ERROR_MESSAGES[errorCode] ?? "처리하지 못했습니다."}</p>
       )}
