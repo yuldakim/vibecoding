@@ -1,4 +1,5 @@
 import type { createServiceClient } from "@/lib/supabase/server";
+import { resolveLinePrice } from "@/lib/prices/resolve";
 
 export type PriceConflict = {
   itemName: string;
@@ -40,26 +41,14 @@ export async function findPriceConflicts(
     for (const pair of usedPairs) {
       const [sizeIdStr, month] = pair.split(":");
       const sizeId = Number(sizeIdStr);
-      const [{ data: sourcePrice }, { data: finalPrice }] = await Promise.all([
-        supabase
-          .from("monthly_prices")
-          .select("unit_price")
-          .eq("client_id", clientId)
-          .eq("item_id", source.id)
-          .eq("size_id", sizeId)
-          .eq("price_month", month)
-          .maybeSingle(),
-        supabase
-          .from("monthly_prices")
-          .select("unit_price")
-          .eq("client_id", clientId)
-          .eq("item_id", finalItemId)
-          .eq("size_id", sizeId)
-          .eq("price_month", month)
-          .maybeSingle(),
+      // resolveLinePrice(T-056)를 그대로 써서 정산이 실제로 계산에 쓰는
+      // 로직과 이 미리보기가 어긋나지 않게 한다.
+      const [sourceResolved, finalResolved] = await Promise.all([
+        resolveLinePrice(supabase, { clientId, itemId: source.id, sizeId, deliveryDate: month }),
+        resolveLinePrice(supabase, { clientId, itemId: finalItemId, sizeId, deliveryDate: month }),
       ]);
-      const sp = sourcePrice?.unit_price ?? null;
-      const fp = finalPrice?.unit_price ?? null;
+      const sp = sourceResolved.unitPrice;
+      const fp = finalResolved.unitPrice;
       if (sp !== fp) {
         warnings.push({
           itemName: source.name,
