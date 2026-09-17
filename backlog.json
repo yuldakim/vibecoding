@@ -989,7 +989,7 @@
       "title": "임시 저장",
       "summary": "작성 중인 송장을 서버에 임시 저장해 다른 기기에서 이어서 작성하게 한다.",
       "doc": "docs/tasks/T-041.md",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "category": "feature",
       "phase": "2. 송장",
@@ -1004,7 +1004,7 @@
       ],
       "note": null,
       "done_at": null,
-      "updated_at": "2026-09-16"
+      "updated_at": "2026-09-17"
     },
     {
       "id": "T-042",
