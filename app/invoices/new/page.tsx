@@ -79,7 +79,7 @@ export default async function NewInvoicePage({
             clientId={selected.id}
             q={q ?? ""}
             itemQuery={itemQ ?? ""}
-            lineItemIds={(Array.isArray(line) ? line : line ? [line] : []).map(Number).filter(Number.isInteger)}
+            rawLines={Array.isArray(line) ? line : line ? [line] : []}
           />
         </>
       )}

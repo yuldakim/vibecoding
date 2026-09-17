@@ -7,13 +7,16 @@ import type { Size } from "@/lib/sizes/queries";
 export function SizeSelect({
   sizes,
   onSelect,
+  initialSelectedId,
 }: {
   sizes: Size[];
   onSelect?: (size: Size) => void;
+  /** 이미 고른 사이즈를 편집하러 돌아왔을 때 그 사이즈가 선택된 채로 보이게 한다. */
+  initialSelectedId?: number | null;
 }) {
   const [items, setItems] = useState(sizes);
   const [customName, setCustomName] = useState("");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(initialSelectedId ?? null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
 

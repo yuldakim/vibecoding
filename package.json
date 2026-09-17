@@ -13,7 +13,8 @@
     "check:notifications": "node --experimental-strip-types lib/notifications/rules.check.ts",
     "check:items-recency": "node --env-file=.env.local --experimental-strip-types lib/items/recency.check.ts",
     "check:items-search": "node --experimental-strip-types lib/items/search.check.ts",
-    "check:prices-resolve": "node --env-file=.env.local --experimental-strip-types lib/prices/resolve.check.ts"
+    "check:prices-resolve": "node --env-file=.env.local --experimental-strip-types lib/prices/resolve.check.ts",
+    "check:invoice-line-codec": "node --experimental-strip-types app/invoices/new/line-codec.check.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
