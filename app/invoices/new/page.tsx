@@ -4,12 +4,13 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { escapeLike } from "@/lib/db/like";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LineEditor } from "./line-editor";
 
 // 사용 중지된 원청이 새로 등록·복구된 것과 같은 요청 안에서 바로 반영돼야
 // 한다 — 정적 프리렌더되면 배포 시점 목록이 굳는다(다른 화면들과 같은 이유).
 export const dynamic = "force-dynamic";
 
-type SearchParams = { q?: string; clientId?: string };
+type SearchParams = { q?: string; clientId?: string; itemQ?: string; line?: string | string[] };
 
 function pickerHref(id: number, q: string | undefined) {
   const params = new URLSearchParams({ clientId: String(id) });
@@ -25,7 +26,7 @@ export default async function NewInvoicePage({
   const session = await getSessionForRole("staff");
   if (!session) redirect("/select");
 
-  const { q, clientId } = await searchParams;
+  const { q, clientId, itemQ, line } = await searchParams;
   const supabase = createServiceClient();
   let query = supabase.from("clients").select("id, name").eq("is_active", true).order("name");
   if (q) query = query.ilike("name", `%${escapeLike(q)}%`);
@@ -70,9 +71,17 @@ export default async function NewInvoicePage({
       )}
 
       {selected && (
-        <p className="rounded-lg border border-border p-4 text-lg">
-          <strong>{selected.name}</strong>을(를) 선택했습니다. 다음 단계(품목 입력)는 곧 만들어집니다.
-        </p>
+        <>
+          <p className="text-lg">
+            <strong>{selected.name}</strong>을(를) 선택했습니다.
+          </p>
+          <LineEditor
+            clientId={selected.id}
+            q={q ?? ""}
+            itemQuery={itemQ ?? ""}
+            lineItemIds={(Array.isArray(line) ? line : line ? [line] : []).map(Number).filter(Number.isInteger)}
+          />
+        </>
       )}
     </main>
   );

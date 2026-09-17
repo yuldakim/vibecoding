@@ -877,7 +877,7 @@
       "title": "송장 작성 2단계: 품목 줄 입력 UI",
       "summary": "품목 검색·선택과 줄 추가/삭제가 되는 송장 본문 입력 화면을 만든다.",
       "doc": "docs/tasks/T-036.md",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "category": "feature",
       "phase": "2. 송장",
@@ -893,7 +893,7 @@
         "§6 송장 작성"
       ],
       "note": null,
-      "done_at": null,
+      "done_at": "2026-09-17",
       "updated_at": "2026-09-17"
     },
     {
